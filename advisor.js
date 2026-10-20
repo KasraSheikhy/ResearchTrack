@@ -36,8 +36,14 @@
     'Earth Science':['earth science','geology','geophysics','geochemistry','climate science','oceanography'],
     'Environmental Science':['environmental science','ecology','sustainability','climate change','renewable energy','conservation'],
     'Astronomy':['astronomy','astrophysics','cosmology','planetary science','observational astronomy'],
+    'Quantum Science':['quantum science','quantum physics','quantum mechanics','quantum information','quantum computing'],
+    'Genetics':['genetics','genomics','heredity','gene expression','population genetics'],
+    'Evolutionary Biology':['evolutionary biology','evolution','ecology','phylogenetics','population biology'],
+    'Natural Sciences':['natural sciences','biology','chemistry','physics','earth science'],
     'Economics':['economics','econometrics','microeconomics','macroeconomics','economic policy'],
-    'Social Science':['social science','psychology','sociology','political science','anthropology','public policy']
+    'Social Science':['social science','psychology','sociology','political science','anthropology','public policy'],
+    'Humanities':['humanities','history','philosophy','literature','linguistics'],
+    'Administration':['administration','finance','human resources','communications','law','project management']
   };
   const COMMON=['python','pytorch','tensorflow','numpy','pandas','rust','c++','java','statistics','probability','linear algebra','optimization','algorithms','machine learning','deep learning','transformers','computer vision','bioinformatics','genomics','physics','chemistry','microscopy','spectroscopy','matlab','laboratory','fieldwork','research','publication','github','docker'];
   function clean(s){return String(s||'').trim().slice(0,120000)}
@@ -76,6 +82,7 @@
     let score=hasProfile?Math.round(Math.min(72,matchCount/Math.max(1,areas.length)*72)):null;
     const deadlinePassed=Boolean(p.deadline && p.deadline<today);
     const paused=p.deadlineStatus==='paused';
+    const closed=p.deadlineStatus==='closed';
     const preferenceCountries=(preferences.countries||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
     const countryMatched=!preferenceCountries.length||preferenceCountries.includes((p.country||'').toLowerCase());
     if(score!==null){
@@ -84,13 +91,14 @@
       score+=p.deadlineStatus==='verified'?8:p.deadlineStatus==='rolling'?5:0;
       // Status is a planning signal, not a predictor of acceptance.
       if(deadlinePassed) score=Math.max(0,score-35);
-      if(paused)score=0;
+      if(paused||closed)score=0;
       score=Math.min(100,score);
     }
     const blockers=[];
     if(paused) blockers.push('This application cycle is paused.');
+    if(closed) blockers.push('The current application call is closed.');
     if(deadlinePassed)blockers.push('The listed deadline has passed.');
-    if(p.deadlineStatus!=='verified'&&p.deadlineStatus!=='rolling'&&!paused)blockers.push('The deadline for this cycle is not verified.');
+    if(p.deadlineStatus!=='verified'&&p.deadlineStatus!=='rolling'&&!paused&&!closed)blockers.push('The deadline for this cycle is not verified.');
     if(p.country==='United States' && /work authorization/i.test(p.eligibility||''))blockers.push('US work authorization must be checked independently.');
     if(!countryMatched)blockers.push('Outside preferred countries.');
     const reasons=[];
@@ -98,7 +106,7 @@
     if(related.length)reasons.push('Related background: '+related.join(', '));
     if(p.funding&&!/consult|check|see program|not applicable/i.test(p.funding))reasons.push('Funding information is listed.');
     if(!exact.length&&!related.length)reasons.push('No research-area overlap was detected from the supplied profile.');
-    return {...p,score,exact,related,reasons,blockers,canApply:!paused&&!deadlinePassed,label:score===null?'Add profile':paused?'Paused':deadlinePassed?'Past deadline':score>=65?'Strong alignment':score>=40?'Potential alignment':'Explore with caution'};
+    return {...p,score,exact,related,reasons,blockers,canApply:!paused&&!closed&&!deadlinePassed,label:score===null?'Add profile':paused?'Paused':closed?'Closed':deadlinePassed?'Past deadline':score>=65?'Strong alignment':score>=40?'Potential alignment':'Explore with caution'};
   }
   function rank(programs,profile,preferences={},today){return programs.map(p=>rankOne(p,profile,preferences,today)).sort((a,b)=>(Number(b.canApply)-Number(a.canApply))||((b.score??-1)-(a.score??-1))||((a.deadline||'9999').localeCompare(b.deadline||'9999')))}
   function reviewCV(text,profile){
@@ -138,7 +146,7 @@
   }
   function report(profile,matches,preferences={}){
     const lines=['# ResearchTrack — Research Opportunity Fit Report','',`Generated: ${new Date().toISOString().slice(0,10)}`,'','This report uses local, rule-based research-area matching. **Scores are not probabilities of admission.** Always confirm eligibility and deadlines on official pages.','','## Profile signals',`- Areas: ${profile.areas.join(', ')||'Not detected'}`,`- Skills: ${profile.keywords.join(', ')||'Not detected'}`,`- Preferred countries: ${preferences.countries||'Any'}`,'','## Ranked opportunities'];
-    matches.forEach((m,i)=>{lines.push('',`### ${i+1}. ${m.name} — ${m.score===null?'Unscored':m.score+'/100'} (${m.label})`,`- Country: ${m.country}`,`- Deadline: ${m.deadline||'Not announced'} (${m.deadlineStatus})`,`- Alignment: ${m.reasons.join('; ')||'Review manually'}`,`- Checks: ${m.blockers.join('; ')||'Confirm eligibility and lab fit'}`,`- Official source: ${m.sourceUrl}`,`- Application: ${m.applicationUrl||'See official source'}`)});
+    matches.forEach((m,i)=>{lines.push('',`### ${i+1}. ${m.name} — ${m.score===null?'Unscored':m.score+'/100'} (${m.label})`,`- Country: ${m.country}`,`- Deadline: ${m.deadline||'Not announced'} (${m.deadlineStatus})`,`- Research fit: ${m.reasons.join('; ')||'Review manually'}`,`- Eligibility (separate from fit): ${m.eligibility||'Confirm degree, nationality, institution and visa requirements'}`,`- Availability checks: ${m.blockers.join('; ')||'Confirm deadline and current call'}`,`- Official source: ${m.sourceUrl}`,`- Application: ${m.applicationUrl||'See official source'}`,`- Labs / projects: ${m.labsUrl||'Not listed'}`)});
     lines.push('','## Suggested next actions');plan(matches,3).forEach(t=>lines.push(`- [ ] ${t.title}${t.due?' (suggested by: '+t.due+')':''}`));
     return lines.join('\n');
   }

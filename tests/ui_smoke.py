@@ -32,17 +32,42 @@ def assembled(mock_feed=None):
 def run():
     errors = []
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True, executable_path=os.environ.get('CHROME_PATH','/usr/bin/chromium'), args=['--no-sandbox'])
+        configured = os.environ.get('CHROME_PATH')
+        candidates = [configured, '/usr/bin/chromium',
+                      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome']
+        executable = next((path for path in candidates if path and Path(path).is_file()), None)
+        browser = p.chromium.launch(headless=True, executable_path=executable, args=['--no-sandbox'])
         page = browser.new_page(viewport={'width': 1440, 'height': 950})
         page.on('pageerror', lambda e: errors.append(str(e)))
         page.set_content(assembled(), wait_until='load')
         assert page.get_by_role('heading', name='Your research, organized.').count() == 1
+        page.locator('[data-view="opportunities"]').click()
+        assert page.locator('.op-card').count() == 22
+        page.locator('#discipline-filter').select_option('Physics')
+        assert 1 < page.locator('.op-card').count() < 22
+        page.locator('#discipline-filter').select_option('all')
+        page.locator('#type-filter').select_option('Fellowship')
+        assert page.locator('.op-card').count() == 1
+        page.locator('#type-filter').select_option('all')
+        page.locator('[data-action="new-opportunity"]').click()
+        page.locator('#field-name').fill('My verified lead')
+        page.locator('#field-institution').fill('Example Institute')
+        page.locator('#field-country').fill('Canada')
+        page.locator('#field-researchAreas').fill('Physics, Mathematics')
+        page.locator('#field-sourceUrl').fill('https://example.edu/research')
+        page.locator('#field-applicationUrl').fill('https://example.edu/apply')
+        page.locator('#field-labsUrl').fill('https://example.edu/labs')
+        page.locator('#field-eligibility').fill('Confirm degree requirements')
+        page.locator('#drawer-form [type=submit]').click()
+        assert page.locator('.op-card.personal').count() == 1
+        assert 'Explore labs' in page.locator('.op-card.personal').inner_text()
         page.locator('[data-view="advisor"]').click()
-        assert page.get_by_role('heading', name='Find your research fit.').count() == 1
+        assert page.get_by_role('heading', name='Compare your profile with the catalog.').count() == 1
         page.locator('#advisor-cv-text').fill('Computer Engineering undergraduate. Research in machine learning, statistics and Python. I know linear algebra and algorithms, with theoretical interests in ML.')
         page.locator('#advisor-interests').fill('Machine learning, statistics')
         page.locator('[data-action="advisor-analyze"]').click()
-        assert page.locator('.advisor-match').count() == 12
+        assert page.locator('.advisor-match').count() == 22
+        assert 'Eligibility — check separately from fit' in page.locator('.advisor-grid').inner_text()
         assert 'Aalto' in page.locator('.advisor-grid').inner_text()
         page.locator('[data-action="advisor-add-plan"]').click()
         page.locator('[data-view="tasks"]').click()
@@ -52,7 +77,7 @@ def run():
         assert page.locator('#advisor-draft-text').count() == 1
         assert 'Dear ' in page.locator('#advisor-draft-text').input_value()
         page.locator('[data-view="updates"]').click()
-        assert page.locator('.source-tile').count() == 12
+        assert page.locator('.source-tile').count() == 22
         page.locator('[data-view="contacts"]').click()
         page.locator('[data-action="new-contact"]').click()
         page.locator('#field-name').fill('Dr. Example')

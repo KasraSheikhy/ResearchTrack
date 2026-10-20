@@ -1,41 +1,36 @@
 # ResearchTrack roadmap
 
-ResearchTrack v0.5 is a local application tracker with a small, curated public
-catalog. The catalog is not a complete search engine. Coverage and source quality
-come before more AI features.
+ResearchTrack v0.5 is a local application tracker with a curated public catalog.
+The 22 current entries are not a complete search engine. Coverage and source
+quality come before more AI features.
 
 ## Available in v0.5
 
 - [x] Local application, contact, task and deadline tracking
 - [x] JSON backup/restore, CSV export and iCalendar export
-- [x] Curated opportunity catalog with official sources
-- [x] Direct application/instruction links when available
-- [x] Manual entry for programs outside the catalog, including URLs and research areas
+- [x] 22 multidisciplinary opportunities with official sources
+- [x] Discipline, program type, country and deadline filters
+- [x] Official website, application and lab/project links when verified
+- [x] Private **Add a link** entries in Discover, included in workspace backup
 - [x] Scheduled checks for three deadlines and the paused ISTA cycle
-- [x] Local fit scoring with deadline and eligibility warnings
+- [x] Local fit scoring with past/closed calls excluded from open recommendations
+- [x] Eligibility shown separately from research fit
 - [x] Fit reports, outreach drafts and application task plans
 - [x] GitHub Pages deployment with parser and advisor tests
 
-## Next: make discovery useful
+## Next: build the discovery engine
 
-- [ ] Expand beyond the current starter catalog
-- [ ] Cover life sciences, chemistry, materials, physics, earth and environmental
-  science, engineering, mathematics, social science and interdisciplinary programs
-- [ ] Add PhD, research assistant, fellowship, summer school and visiting-student
-  opportunities instead of mostly internships
-- [ ] Store both the official program page and the direct application/instructions link
-- [ ] Add lab, supervisor, project and recent-publication links where the program
-  publishes them
-- [ ] Add source adapters for official university pages and trusted public datasets
-- [ ] Import opportunities from CSV/JSON and export a reusable catalog contribution
-- [ ] Detect duplicate programs across sources and preserve the strongest citation
-- [ ] Track application cycle, opening date, deadline timezone, funding, eligibility,
-  nationality restrictions and last verification separately
-- [ ] Add saved searches and filters for field, degree level, country, funding,
-  eligibility, remote/on-site and deadline window
-- [ ] Let users follow a search and see newly added or changed opportunities
-- [ ] Add a review queue for ambiguous or conflicting source data
-- [ ] Show catalog coverage and freshness instead of implying complete results
+- [ ] Discover new calls from official university, institute and funding-agency pages
+- [ ] Normalize dates, application cycles, funding, degree level and eligibility with
+  a source citation for every imported field
+- [ ] Detect duplicate programs and redirects before they enter the public catalog
+- [ ] Send uncertain, conflicting or incomplete results to a human review queue
+- [ ] Monitor broken links, changed deadlines and reopened/closed calls
+- [ ] Add PhD, research assistant, fellowship and visiting-student opportunities
+- [ ] Add saved searches and alerts for new matching opportunities
+- [ ] Let users report stale data or submit a private link for public review
+- [ ] Show catalog coverage and freshness by field, country and last verification
+- [ ] Import/export reviewed opportunities as CSV or JSON
 
 ## Better matching
 
@@ -44,7 +39,9 @@ come before more AI features.
 - [ ] Rank custom opportunities as well as public catalog entries
 - [ ] Match against project descriptions, lab pages and publication abstracts with
   a citation for every recommendation
-- [ ] Separate research fit, eligibility confidence, funding fit and deadline urgency
+- [x] Separate research fit from eligibility text
+- [ ] Add independent eligibility confidence, funding fit and deadline urgency
+- [ ] Check selected labs and recent publications, with links to the underlying source
 - [ ] Explain why an opportunity was omitted or ranked low
 - [ ] Support on-device PDF/DOCX text extraction
 - [ ] Keep any external model optional, consent-based and isolated from private data

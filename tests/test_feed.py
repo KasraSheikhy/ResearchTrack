@@ -16,6 +16,21 @@ from update_opportunities import (
 
 
 class FeedTests(unittest.TestCase):
+    def test_catalog_schema_and_coverage(self):
+        feed = json.loads((ROOT / 'data' / 'opportunities.json').read_text())
+        programs = feed['programs']
+        self.assertEqual(len(programs), 22)
+        self.assertEqual(len({program['id'] for program in programs}), 22)
+        self.assertGreaterEqual(len({area for program in programs for area in program['researchAreas']}), 12)
+        for program in programs:
+            self.assertTrue(program['name'])
+            self.assertTrue(program['researchAreas'])
+            self.assertTrue(program['sourceUrl'].startswith('https://'))
+            self.assertIn(program['deadlineStatus'], {'verified', 'unannounced', 'rolling', 'closed', 'paused'})
+            for field in ('applicationUrl', 'labsUrl'):
+                if program.get(field):
+                    self.assertTrue(program[field].startswith('https://'))
+
     def test_e3_date(self):
         txt = 'The portal will close on November 1st 2026 at 23:55 Swiss local time.'
         self.assertEqual(extract_deadline('epfl-e3', txt), '2026-11-01')
