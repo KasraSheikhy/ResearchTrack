@@ -65,9 +65,10 @@ verified data.
 
 ## Deployment
 
-The workflow in `.github/workflows/site.yml` runs tests, refreshes monitored public
-data on schedule, and deploys the static site to GitHub Pages. Private browser data
-is never available to the workflow or committed to the repository.
+The workflow in `.github/workflows/site.yml` runs tests and refreshes monitored
+public data on schedule. GitHub Pages deployment requires a manual workflow run.
+Private browser data is never available to the workflow or committed to the
+repository.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution notes and
 [SECURITY.md](SECURITY.md) for reporting security issues.
