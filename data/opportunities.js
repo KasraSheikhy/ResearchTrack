@@ -1,7 +1,7 @@
 window.RESEARCHTRACK_FEED = {
   "schemaVersion": 1,
-  "feedUpdatedAt": "2026-10-20T12:00:00Z",
-  "feedStatus": "seed",
+  "feedUpdatedAt": "2026-10-20T13:23:17+00:00",
+  "feedStatus": "auto-checked",
   "description": "Source-linked public program information; values without verified deadlines are intentionally left blank.",
   "programs": [
     {
@@ -27,8 +27,8 @@ window.RESEARCHTRACK_FEED = {
       "notes": "Choose research topics and preferred host laboratories.",
       "sourceUrl": "https://eee.epfl.ch/apply/",
       "applicationUrl": "https://eee.epfl.ch/apply/",
-      "lastChecked": "2026-10-20T12:00:00Z",
-      "verifiedAt": "2026-10-20T12:00:00Z"
+      "lastChecked": "2026-10-20T13:23:17+00:00",
+      "verifiedAt": "2026-10-20T13:23:17+00:00"
     },
     {
       "id": "epfl-srp",
@@ -53,8 +53,8 @@ window.RESEARCHTRACK_FEED = {
       "notes": "Application must be finished in one sitting; a reference letter is required.",
       "sourceUrl": "https://www.epfl.ch/schools/sv/education/summer-research-program/how-to-apply/",
       "applicationUrl": "https://www.epfl.ch/schools/sv/education/summer-research-program/how-to-apply/",
-      "lastChecked": "2026-10-20T12:00:00Z",
-      "verifiedAt": "2026-10-20T12:00:00Z"
+      "lastChecked": "2026-10-20T13:23:17+00:00",
+      "verifiedAt": "2026-10-20T13:23:17+00:00"
     },
     {
       "id": "aalto-asci",
@@ -80,8 +80,8 @@ window.RESEARCHTRACK_FEED = {
       "notes": "2027 project list expected mid-December 2026.",
       "sourceUrl": "https://www.aalto.fi/en/aalto-university-science-institute-asci/aalto-university-science-institute-international-summer-research-programme",
       "applicationUrl": "",
-      "lastChecked": "2026-10-20T12:00:00Z",
-      "verifiedAt": "2026-10-20T12:00:00Z"
+      "lastChecked": "2026-10-20T13:23:17+00:00",
+      "verifiedAt": "2026-10-20T13:23:17+00:00"
     },
     {
       "id": "eth-ssrf",
@@ -236,8 +236,8 @@ window.RESEARCHTRACK_FEED = {
       "notes": "Official ISTA FAQ confirms 2026 and 2027 ISTernship cycles are paused. Separate year-round internships may exist.",
       "sourceUrl": "https://phd.ista.ac.at/isternship/isternship-faq/",
       "applicationUrl": "",
-      "lastChecked": "2026-10-20T12:00:00Z",
-      "verifiedAt": "2026-10-20T12:00:00Z"
+      "lastChecked": "2026-10-20T13:23:17+00:00",
+      "verifiedAt": "2026-10-20T13:23:17+00:00"
     }
   ]
 };
