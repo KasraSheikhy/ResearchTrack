@@ -42,7 +42,7 @@ def run():
         page.locator('#advisor-cv-text').fill('Computer Engineering undergraduate. Research in machine learning, statistics and Python. I know linear algebra and algorithms, with theoretical interests in ML.')
         page.locator('#advisor-interests').fill('Machine learning, statistics')
         page.locator('[data-action="advisor-analyze"]').click()
-        assert page.locator('.advisor-match').count() == 9
+        assert page.locator('.advisor-match').count() == 12
         assert 'Aalto' in page.locator('.advisor-grid').inner_text()
         page.locator('[data-action="advisor-add-plan"]').click()
         page.locator('[data-view="tasks"]').click()
@@ -52,7 +52,7 @@ def run():
         assert page.locator('#advisor-draft-text').count() == 1
         assert 'Dear ' in page.locator('#advisor-draft-text').input_value()
         page.locator('[data-view="updates"]').click()
-        assert page.locator('.source-tile').count() == 9
+        assert page.locator('.source-tile').count() == 12
         page.locator('[data-view="contacts"]').click()
         page.locator('[data-action="new-contact"]').click()
         page.locator('#field-name').fill('Dr. Example')

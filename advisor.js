@@ -25,9 +25,21 @@
     'Software Engineering':['software engineering','software development','\\bpython\\b','\\brust\\b','\\bjava\\b','\\bc\+\+\\b','\\bgit\\b','testing','backend'],
     'Engineering':['engineering','computer engineering','electrical engineering','systems design'],
     'Quantitative Biology':['quantitative biology','computational biology','bioinformatics','biostatistics','mathematical biology'],
-    'Computing':['computing','computer science','software engineering','high performance computing','\\bhpc\\b','programming']
+    'Computing':['computing','computer science','software engineering','high performance computing','\\bhpc\\b','programming'],
+    'Chemistry':['chemistry','chemical','organic chemistry','inorganic chemistry','analytical chemistry','catalysis','spectroscopy'],
+    'Materials Science':['materials science','nanomaterials','polymers','semiconductor','metallurgy','thin films'],
+    'Molecular Biology':['molecular biology','cell biology','biochemistry','microbiology','genetics','immunology'],
+    'Neuroscience':['neuroscience','neural systems','cognitive science','brain imaging','neurobiology'],
+    'Biomedical Science':['biomedical','biomedicine','medical research','drug discovery','public health','clinical research'],
+    'Electrical Engineering':['electrical engineering','electronics','signal processing','telecommunications','embedded systems','control systems'],
+    'Mechanical Engineering':['mechanical engineering','mechanics','thermodynamics','fluid dynamics','manufacturing','robotics'],
+    'Earth Science':['earth science','geology','geophysics','geochemistry','climate science','oceanography'],
+    'Environmental Science':['environmental science','ecology','sustainability','climate change','renewable energy','conservation'],
+    'Astronomy':['astronomy','astrophysics','cosmology','planetary science','observational astronomy'],
+    'Economics':['economics','econometrics','microeconomics','macroeconomics','economic policy'],
+    'Social Science':['social science','psychology','sociology','political science','anthropology','public policy']
   };
-  const COMMON=['python','pytorch','tensorflow','numpy','pandas','rust','c++','java','statistics','probability','linear algebra','optimization','algorithms','machine learning','deep learning','transformers','computer vision','bioinformatics','genomics','physics','research','publication','github','docker'];
+  const COMMON=['python','pytorch','tensorflow','numpy','pandas','rust','c++','java','statistics','probability','linear algebra','optimization','algorithms','machine learning','deep learning','transformers','computer vision','bioinformatics','genomics','physics','chemistry','microscopy','spectroscopy','matlab','laboratory','fieldwork','research','publication','github','docker'];
   function clean(s){return String(s||'').trim().slice(0,120000)}
   function hit(text,pattern){try{return new RegExp(pattern,'i').test(text)}catch{return text.toLowerCase().includes(pattern.toLowerCase())}}
   function extractProfile(text, interests=''){
@@ -47,7 +59,11 @@
       ['Machine Learning','Artificial Intelligence','Data Science'],
       ['Statistics','Probability','Mathematics'],
       ['Bioinformatics','Computational Biology','Quantitative Biology'],
-      ['Computer Science','Computing','Algorithms','Software Engineering','Engineering']
+      ['Computer Science','Computing','Algorithms','Software Engineering','Engineering'],
+      ['Chemistry','Materials Science'],
+      ['Molecular Biology','Biomedical Science','Neuroscience'],
+      ['Engineering','Electrical Engineering','Mechanical Engineering'],
+      ['Earth Science','Environmental Science']
     ];
     return groups.some(g=>g.some(k=>k.toLowerCase()===ar)&&g.some(k=>profile.areas.includes(k)));
   }
@@ -122,7 +138,7 @@
   }
   function report(profile,matches,preferences={}){
     const lines=['# ResearchTrack — Research Opportunity Fit Report','',`Generated: ${new Date().toISOString().slice(0,10)}`,'','This report uses local, rule-based research-area matching. **Scores are not probabilities of admission.** Always confirm eligibility and deadlines on official pages.','','## Profile signals',`- Areas: ${profile.areas.join(', ')||'Not detected'}`,`- Skills: ${profile.keywords.join(', ')||'Not detected'}`,`- Preferred countries: ${preferences.countries||'Any'}`,'','## Ranked opportunities'];
-    matches.forEach((m,i)=>{lines.push('',`### ${i+1}. ${m.name} — ${m.score===null?'Unscored':m.score+'/100'} (${m.label})`,`- Country: ${m.country}`,`- Deadline: ${m.deadline||'Not announced'} (${m.deadlineStatus})`,`- Alignment: ${m.reasons.join('; ')||'Review manually'}`,`- Checks: ${m.blockers.join('; ')||'Confirm eligibility and lab fit'}`,`- Source: ${m.sourceUrl}`)});
+    matches.forEach((m,i)=>{lines.push('',`### ${i+1}. ${m.name} — ${m.score===null?'Unscored':m.score+'/100'} (${m.label})`,`- Country: ${m.country}`,`- Deadline: ${m.deadline||'Not announced'} (${m.deadlineStatus})`,`- Alignment: ${m.reasons.join('; ')||'Review manually'}`,`- Checks: ${m.blockers.join('; ')||'Confirm eligibility and lab fit'}`,`- Official source: ${m.sourceUrl}`,`- Application: ${m.applicationUrl||'See official source'}`)});
     lines.push('','## Suggested next actions');plan(matches,3).forEach(t=>lines.push(`- [ ] ${t.title}${t.due?' (suggested by: '+t.due+')':''}`));
     return lines.join('\n');
   }

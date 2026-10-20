@@ -7,7 +7,7 @@ assert(profile.areas.includes('Machine Learning'));
 assert(profile.areas.includes('Statistics'));
 assert(profile.keywords.includes('python'));
 const ps=[
-{id:'a',name:'ML Lab',country:'Finland',researchAreas:['Machine Learning','Statistics'],deadline:'2027-01-31',deadlineStatus:'verified',funding:'Paid'},
+{id:'a',name:'ML Lab',country:'Finland',researchAreas:['Machine Learning','Statistics'],deadline:'2027-01-31',deadlineStatus:'verified',funding:'Paid',sourceUrl:'https://example.edu/program',applicationUrl:'https://apply.example.edu'},
 {id:'b',name:'Suspended',country:'Austria',researchAreas:['Machine Learning'],deadlineStatus:'paused'},
 {id:'c',name:'Old',country:'Finland',researchAreas:['Machine Learning'],deadline:'2025-01-01',deadlineStatus:'verified'},
 {id:'d',name:'Biology',country:'Japan',researchAreas:['Bioinformatics'],deadlineStatus:'unannounced'}
@@ -20,6 +20,10 @@ assert.equal(matches.find(x=>x.id==='c').canApply,false);
 assert(matches.find(x=>x.id==='a').score>matches.find(x=>x.id==='d').score);
 assert(A.emailDraft(matches[0],profile).includes('[Professor / PI name]'));
 assert(A.report(profile,matches).includes('not probabilities of admission'));
+assert(A.report(profile,matches).includes('https://apply.example.edu'));
+const chemistry=A.extractProfile('Chemistry student with spectroscopy, catalysis and laboratory research experience.','materials science');
+assert(chemistry.areas.includes('Chemistry'));
+assert(chemistry.areas.includes('Materials Science'));
 const tasks=A.plan(matches,3);
 assert(tasks.length>0&&tasks.every(x=>x.programId==='a'||x.programId==='d'));
 console.log('PASS: CV extraction, ranking, hard stop, deadlines, report, email and plan.');

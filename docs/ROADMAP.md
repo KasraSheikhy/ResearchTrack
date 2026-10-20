@@ -1,92 +1,84 @@
-# ResearchTrack · Product roadmap
+# ResearchTrack roadmap
 
-> A clean, open-source workspace to discover academic opportunities and manage
-> research applications, contacts and deadlines. Checkboxes below distinguish
-> code that **already exists** from planned work.
+ResearchTrack v0.5 is a local application tracker with a small, curated public
+catalog. The catalog is not a complete search engine. Coverage and source quality
+come before more AI features.
 
-## Phase 0 — Scope and data model
-- [x] Define opportunity, application, contact and task entities
-- [x] Separate **public verified sources** from **private user data**
-- [x] Define deadline statuses: verified, unannounced, rolling, paused
-- [x] Choose a no-dependency static MVP for immediate use and GitHub Pages hosting
-- [x] Publish a CONTRIBUTING guide
-- [ ] Publish a code of conduct
+## Available in v0.5
 
-## Phase 1 — Working personal dashboard (v0.2)
-- [x] Responsive dark-mode dashboard with core stats
-- [x] General academic application types (internship, RA, PhD, master’s, summer school)
-- [x] Source-linked opportunity catalog with search and filters
-- [x] Application tracker (status, university, country, lab, PI, email, funding, visa)
-- [x] Application document checklist
-- [x] Multiple research contacts, emails and follow-up dates
-- [x] Tasks with due dates and completed states
-- [x] Monthly deadline and task calendar
-- [x] JSON backup/restore; CSV exports; iCalendar export
-- [x] Private browser-local persistence
-- [x] Sample 2027 programs with sources; ISTA marked **paused**
-- [ ] Drag-and-drop Kanban board for applications
-- [x] Ranked lab / supervisor contacts, linked to opportunities
-- [ ] Multi-lab preference ranking embedded directly within each application
-- [ ] Migration helper for older ResearchTrack export formats
-- [ ] Import from CSV and Excel
+- [x] Local application, contact, task and deadline tracking
+- [x] JSON backup/restore, CSV export and iCalendar export
+- [x] Curated opportunity catalog with official sources
+- [x] Direct application/instruction links when available
+- [x] Manual entry for programs outside the catalog, including URLs and research areas
+- [x] Scheduled checks for three deadlines and the paused ISTA cycle
+- [x] Local fit scoring with deadline and eligibility warnings
+- [x] Fit reports, outreach drafts and application task plans
+- [x] GitHub Pages deployment with parser and advisor tests
 
-## Phase 2 — Trustworthy opportunity discovery
-- [x] Scheduled GitHub Actions workflow that reads limited official sources
-- [x] Rule-based, year-scoped extraction of 3 verified program deadlines
-- [x] Fail-safe parser: missing/ambiguous results never erase a previous date
-- [x] Detect suspended ISTA ISTernship cycle
-- [x] Source freshness data, official URL and deadline timezone in the feed
-- [x] Periodic remote public-feed refresh on deployed website (15 minutes while open)
-- [x] Unit tests for deadline parsing and failure cases
-- [ ] Expand source coverage beyond 4 monitored programs
-- [ ] Human review queue for questionable date changes
-- [x] Source updates tab / audit history in the UI
-- [ ] New opportunity submissions (GitHub Issues / pull requests)
-- [x] Local, in-app deadline-change alerts for tracked opportunities
-- [ ] External notifications (email / push) when followed opportunities change
+## Next: make discovery useful
 
-## Phase 2.5 — Advisor & research matching (v0.4)
-- [x] Introduce a separate offline advisor engine (no personal data uploaded)
-- [x] CV text paste / `.txt` / `.md` import, profile skill detection
-- [x] Explainable research-alignment ranking with eligibility/deadline warnings
-- [x] Session-only CV privacy and no CV data in JSON workspace backups
-- [x] Export a Markdown fit report
-- [x] Suggested application action plan with opt-in task creation
-- [x] Editable outreach email draft with user review; no auto-send
-- [x] Node unit tests + browser smoke tests for Advisor
-- [ ] Robust PDF/DOCX parsing entirely on-device (no external document upload)
-- [ ] Allow users to edit profile signals and assign manual weighting
-- [ ] Additional opportunity metadata: required qualifications, host PI, lab papers and DOI links
-- [ ] Evidence-grounded semantic research fit from publications with source citations
-- [ ] Opt-in LLM provider with server-side key handling, privacy controls and rate limits
-- [ ] CV critique with specific evidence and user-approved rewrites
-- [ ] Cross-source eligibility/visa verification with human-review disclaimers
-- [ ] Personal statement draft, interview prep and explicit user-approved actions
+- [ ] Expand beyond the current starter catalog
+- [ ] Cover life sciences, chemistry, materials, physics, earth and environmental
+  science, engineering, mathematics, social science and interdisciplinary programs
+- [ ] Add PhD, research assistant, fellowship, summer school and visiting-student
+  opportunities instead of mostly internships
+- [ ] Store both the official program page and the direct application/instructions link
+- [ ] Add lab, supervisor, project and recent-publication links where the program
+  publishes them
+- [ ] Add source adapters for official university pages and trusted public datasets
+- [ ] Import opportunities from CSV/JSON and export a reusable catalog contribution
+- [ ] Detect duplicate programs across sources and preserve the strongest citation
+- [ ] Track application cycle, opening date, deadline timezone, funding, eligibility,
+  nationality restrictions and last verification separately
+- [ ] Add saved searches and filters for field, degree level, country, funding,
+  eligibility, remote/on-site and deadline window
+- [ ] Let users follow a search and see newly added or changed opportunities
+- [ ] Add a review queue for ambiguous or conflicting source data
+- [ ] Show catalog coverage and freshness instead of implying complete results
 
-## Phase 3 — Accounts and cross-device sync
-- [ ] Build optional authentication (GitHub/Google)
-- [ ] Supabase Postgres schema + row-level security tests
-- [ ] Opt-in encrypted backups and account sync
-- [ ] Safe local-to-cloud migration without accidental public exposure
-- [ ] Notification preferences (browser and opt-in email)
-- [ ] Google Calendar OAuth integration (opt-in)
+## Better matching
 
-## Phase 4 — Public release
-- [x] MIT license
-- [x] Github Pages deployment workflow (ready; not yet activated)
-- [x] Standalone README with setup/deployment instructions
-- [x] Optional local Playwright smoke test: desktop, mobile, contact, application, calendar and feed alerts
-- [ ] Automated browser UI regression tests in CI
-- [ ] Accessibility audit and keyboard navigation improvements
-- [ ] Security review (XSS, data import limits, source monitoring)
-- [ ] Privacy policy + terms explaining data retention
-- [x] Open-source contribution and opportunity issue templates
-- [ ] Public project board
-- [ ] Create public GitHub repository and publish site
+- [x] Recognize research areas beyond AI/CS in pasted CV text
+- [ ] Let users edit detected fields, exclude unwanted topics and set priorities
+- [ ] Rank custom opportunities as well as public catalog entries
+- [ ] Match against project descriptions, lab pages and publication abstracts with
+  a citation for every recommendation
+- [ ] Separate research fit, eligibility confidence, funding fit and deadline urgency
+- [ ] Explain why an opportunity was omitted or ranked low
+- [ ] Support on-device PDF/DOCX text extraction
+- [ ] Keep any external model optional, consent-based and isolated from private data
 
-## First issue candidates
-1. **Improve deadline parsers**: add source-specific tests and manual review workflow.
-2. **Multiple supervisors per application**: model lab preferences with rank and correspondence history.
-3. **Notification center**: track deadline changes without sending private application data to a public server.
-4. **Cloud account phase**: implement opt-in Supabase sync with RLS and exportability.
-5. **Responsive UX**: add keyboard shortcuts, focus management and accessible calendar interactions.
+## Application workflow
+
+- [ ] Multiple supervisors and ranked labs per application
+- [ ] Outreach history, follow-up reminders and reusable email templates
+- [ ] Recommender tracking and document versions
+- [ ] Drag-and-drop application board
+- [ ] Deadline conflict view and weekly planning
+- [ ] CSV/Excel import with a preview before replacing or merging data
+- [ ] Safe migration from older ResearchTrack backups
+
+## Quality and release work
+
+- [ ] Run browser smoke tests in CI
+- [ ] Add keyboard navigation and an accessibility audit
+- [ ] Add feed-schema validation and broken-link checks
+- [ ] Add security tests for imports, URL handling and rendered user content
+- [ ] Add contributor tools for proposing and reviewing new opportunities
+- [ ] Publish a clear privacy policy before optional accounts or cloud sync
+
+## Later, only if needed
+
+- [ ] Optional encrypted cross-device sync
+- [ ] Optional calendar integration and browser/email notifications
+- [ ] Shared shortlists for mentors or research groups with explicit permissions
+- [ ] Opt-in semantic search over verified sources
+
+## Good first issues
+
+1. Add a verified non-CS opportunity with both official and application links.
+2. Add feed-schema and broken-link tests.
+3. Add field, degree-level and funding filters.
+4. Rank manually entered opportunities in the Fit Advisor.
+5. Add a review queue for ambiguous deadline changes.
