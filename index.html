@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0a1020" />
+  <meta name="description" content="ResearchTrack — the open-source research application workspace." />
+  <title>ResearchTrack — Research applications, organized.</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app" class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">R<span>.</span></div><div><strong>ResearchTrack</strong><small>ACADEMIC WORKSPACE</small></div></div>
+    <div class="workspace-label">WORKSPACE</div>
+    <nav aria-label="Main navigation" id="nav">
+      <button data-view="overview" class="nav-item active"><span class="nav-icon">◫</span> Overview</button>
+      <button data-view="opportunities" class="nav-item"><span class="nav-icon">◎</span> Discover <span class="nav-count" id="opportunity-count">9</span></button>
+      <button data-view="advisor" class="nav-item"><span class="nav-icon">✧</span> AI Advisor <span class="nav-count">BETA</span></button>
+      <button data-view="updates" class="nav-item"><span class="nav-icon">◈</span> Source updates <span class="nav-count" id="update-count">0</span></button>
+      <button data-view="applications" class="nav-item"><span class="nav-icon">▤</span> Applications</button>
+      <button data-view="contacts" class="nav-item"><span class="nav-icon">♧</span> Contacts</button>
+      <button data-view="tasks" class="nav-item"><span class="nav-icon">☑</span> Tasks</button>
+      <button data-view="calendar" class="nav-item"><span class="nav-icon">▦</span> Calendar</button>
+    </nav>
+    <div class="workspace-label lower">PREFERENCES</div>
+    <nav><button data-view="settings" class="nav-item"><span class="nav-icon">⚙</span> Settings & data</button></nav>
+    <div class="side-bottom"><div class="live-dot"></div><div><strong id="sync-state">Source feed ready</strong><small id="sync-time">Public opportunities · Source-linked</small></div></div>
+    <div class="side-foot">v0.4.0 · Open source beta</div>
+  </aside>
+  <div class="body-frame">
+    <header class="topbar"><div class="breadcrumbs"><span>ResearchTrack</span><span class="breadcrumb-divider">/</span><b id="crumb">Overview</b></div><div class="top-actions"><span class="sync-pill" id="feed-pill"><span class="live-dot"></span> Public feed</span><button class="btn btn-accent" id="quick-add">+ New application</button></div></header>
+    <main id="content" class="content" tabindex="-1"></main>
+    <footer>ResearchTrack <span>·</span> Your private application data stays in your browser <span>·</span> Deadlines require official verification</footer>
+  </div>
+</div>
+<div id="drawer-backdrop" class="drawer-backdrop hidden"></div>
+<section id="drawer" class="drawer hidden" role="dialog" aria-modal="true" aria-label="Edit application" tabindex="-1"></section>
+<div id="toast" class="toast hidden" role="status"></div>
+<input type="file" id="import-file" accept="application/json,.json" hidden />
+<script src="data/opportunities.js"></script>
+<script src="advisor.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
