@@ -1,4 +1,4 @@
-/* ResearchTrack Advisor Engine v0.4
+/* ResearchTrack Advisor Engine v0.5
  * Deterministic, local-only analysis — this is NOT an LLM or an estimate of admission chances.
  * No CV data is transferred to a server. Designed for progressive enhancement to an opt-in AI provider.
  */

@@ -6,7 +6,13 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
-from update_opportunities import normalize_html, extract_deadline, detect_paused, update_feed
+from update_opportunities import (
+    detect_paused,
+    extract_deadline,
+    normalize_html,
+    update_feed,
+    write_text_atomic,
+)
 
 
 class FeedTests(unittest.TestCase):
@@ -41,6 +47,16 @@ class FeedTests(unittest.TestCase):
         unchanged,changes=update_feed(copy.deepcopy(original),{'epfl-e3':'<p>Deadline November 2, 2028</p>'},'2026-10-20T10:00:00+00:00')
         self.assertEqual(next(x for x in unchanged['programs'] if x['id']=='epfl-e3')['deadline'],'2026-11-01')
         self.assertEqual(changes,[])
+
+    def test_atomic_write_replaces_file(self):
+        from tempfile import TemporaryDirectory
+
+        with TemporaryDirectory() as directory:
+            target = Path(directory) / 'feed.json'
+            target.write_text('old', encoding='utf-8')
+            write_text_atomic(target, 'new\n')
+            self.assertEqual(target.read_text(encoding='utf-8'), 'new\n')
+            self.assertEqual(list(target.parent.glob(f'.{target.name}.*')), [])
 
 
 if __name__=='__main__':

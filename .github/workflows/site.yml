@@ -1,59 +1,89 @@
-name: Check opportunities and deploy
+name: Test, refresh, and deploy
+
 on:
   push:
     branches: [main]
   schedule:
-    - cron: '17 5,17 * * *' # Twice daily, UTC (GitHub scheduling may be delayed)
+    - cron: '17 5,17 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-
 concurrency:
-  group: github-pages
+  group: researchtrack-pages
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test feed parser
+        run: python -m unittest discover -s tests -v
+      - name: Test advisor engine
+        run: node tests/advisor.test.js
+
+  refresh:
+    if: github.event_name != 'push'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check official sources
+        run: python scripts/update_opportunities.py
+      - name: Commit verified feed changes
+        run: |
+          git add data/opportunities.json data/opportunities.js data/changes.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git config user.name "researchtrack-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: refresh verified program metadata"
+          git push origin HEAD:main
+
+  deploy:
+    if: >-
+      always() &&
+      needs.test.result == 'success' &&
+      (needs.refresh.result == 'success' || needs.refresh.result == 'skipped')
+    needs: [test, refresh]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout source
+      - name: Check out repository
         uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      - name: Run parser tests
-        run: python -m unittest discover -s tests -v
-      - name: Run advisor engine tests
-        run: node tests/advisor.test.js
-      - name: Check official sources (safe failure handling)
-        run: python scripts/update_opportunities.py
-      - name: Commit verified public-feed changes only
-        run: |
-          git config user.name "researchtrack-bot"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/opportunities.json data/opportunities.js data/changes.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: refresh verified program metadata"
-            git push
-          fi
+          ref: main
       - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Stage static public files only
+      - name: Stage public files
         run: |
           mkdir -p dist/data
           cp index.html app.js advisor.js styles.css .nojekyll dist/
           cp data/opportunities.json data/opportunities.js data/changes.json dist/data/
-      - name: Upload site artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

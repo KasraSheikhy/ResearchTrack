@@ -11,9 +11,11 @@ import argparse
 import datetime as dt
 from html.parser import HTMLParser
 import json
+import os
 from pathlib import Path
 import re
 import sys
+import tempfile
 import urllib.error
 import urllib.request
 
@@ -21,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FEED = ROOT / 'data' / 'opportunities.json'
 JS = ROOT / 'data' / 'opportunities.js'
 CHANGES = ROOT / 'data' / 'changes.json'
+MAX_RESPONSE_BYTES = 2_000_000
 
 # All monitored URLs are official program pages. Expected deadline year avoids
 # accidentally picking up a different application cycle elsewhere on a page.
@@ -55,12 +58,15 @@ class ExtractText(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.blocks = []
         self.ignore = 0
+
     def handle_starttag(self, tag, attrs):
         if tag in ('script', 'style', 'noscript'):
             self.ignore += 1
+
     def handle_endtag(self, tag):
         if tag in ('script', 'style', 'noscript'):
             self.ignore = max(0, self.ignore - 1)
+
     def handle_data(self, data):
         if not self.ignore:
             self.blocks.append(data)
@@ -104,9 +110,29 @@ def fetch_source(url: str, timeout: int = 20) -> str:
                  'Accept': 'text/html,application/xhtml+xml'},
     )
     with urllib.request.urlopen(request, timeout=timeout) as response:
-        content = response.read(2_000_000)
+        content = response.read(MAX_RESPONSE_BYTES + 1)
+        if len(content) > MAX_RESPONSE_BYTES:
+            raise ValueError(f'response exceeds {MAX_RESPONSE_BYTES} bytes')
         encoding = response.headers.get_content_charset() or 'utf-8'
         return content.decode(encoding, errors='replace')
+
+
+def write_text_atomic(path: Path, content: str) -> None:
+    """Replace a text file without leaving a partial write behind."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(dir=path.parent, prefix=f'.{path.name}.')
+    try:
+        with os.fdopen(descriptor, 'w', encoding='utf-8', newline='') as temporary:
+            temporary.write(content)
+            temporary.flush()
+            os.fsync(temporary.fileno())
+        os.replace(temporary_name, path)
+    except BaseException:
+        try:
+            os.unlink(temporary_name)
+        except FileNotFoundError:
+            pass
+        raise
 
 
 def update_feed(feed: dict, pages: dict[str, str], now: str) -> tuple[dict, list[dict]]:
@@ -129,7 +155,13 @@ def update_feed(feed: dict, pages: dict[str, str], now: str) -> tuple[dict, list
             if not deadline:
                 continue  # A failed parser must not erase a verified deadline.
             if program.get('deadline') != deadline:
-                changes.append({'id':key,'field':'deadline','old':program.get('deadline'),'new':deadline,'at':now})
+                changes.append({
+                    'id': key,
+                    'field': 'deadline',
+                    'old': program.get('deadline'),
+                    'new': deadline,
+                    'at': now,
+                })
             program['deadline'] = deadline
             program['deadlineStatus'] = 'verified'
         program['lastChecked'] = now
@@ -151,18 +183,24 @@ def main(argv=None) -> int:
         try:
             pages[pid] = fetch_source(settings['url'])
             print(f'[fetched] {pid}')
-        except (urllib.error.URLError, TimeoutError, OSError, UnicodeError) as exc:
+        except (urllib.error.URLError, TimeoutError, OSError, UnicodeError, ValueError) as exc:
             print(f'[skipped] {pid}: {exc}', file=sys.stderr)
     if not pages:
         print('No sources fetched. Keeping last known verified feed unchanged.')
         return 0
     updated, changes = update_feed(feed, pages, dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds'))
     if not args.dry_run and updated['feedStatus'] != 'seed':
-        serialized = json.dumps(updated,ensure_ascii=False,indent=2) + '\n'
-        FEED.write_text(serialized, encoding='utf8')
-        JS.write_text('window.RESEARCHTRACK_FEED = ' + json.dumps(updated,ensure_ascii=False,indent=2) + ';\n',encoding='utf8')
-        existing = json.loads(CHANGES.read_text()) if CHANGES.exists() else []
-        CHANGES.write_text(json.dumps((existing+changes)[-50:],ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+        serialized = json.dumps(updated, ensure_ascii=False, indent=2) + '\n'
+        write_text_atomic(FEED, serialized)
+        write_text_atomic(
+            JS,
+            'window.RESEARCHTRACK_FEED = '
+            + json.dumps(updated, ensure_ascii=False, indent=2)
+            + ';\n',
+        )
+        existing = json.loads(CHANGES.read_text(encoding='utf-8')) if CHANGES.exists() else []
+        history = json.dumps((existing + changes)[-50:], ensure_ascii=False, indent=2) + '\n'
+        write_text_atomic(CHANGES, history)
     print(f'Changes detected: {len(changes)}')
     return 0
 

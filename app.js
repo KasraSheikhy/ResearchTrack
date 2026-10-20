@@ -1,4 +1,4 @@
-/* ResearchTrack v0.4 — dependency-free, local-first application manager.
+/* ResearchTrack v0.5 — dependency-free, local-first application manager.
  * Shared/public opportunities: window.RESEARCHTRACK_FEED + periodically fetched JSON.
  * Personal applications/contacts/tasks: localStorage only, never uploaded by the app.
  */
