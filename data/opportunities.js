@@ -1,6 +1,6 @@
 window.RESEARCHTRACK_FEED = {
   "schemaVersion": 1,
-  "feedUpdatedAt": "2026-11-08T11:57:22+00:00",
+  "feedUpdatedAt": "2026-11-08T21:11:58+00:00",
   "feedStatus": "partially-checked",
   "description": "Source-linked public program information; values without verified deadlines are intentionally left blank.",
   "programs": [
@@ -53,8 +53,8 @@ window.RESEARCHTRACK_FEED = {
       "notes": "Application must be finished in one sitting; a reference letter is required.",
       "sourceUrl": "https://www.epfl.ch/schools/sv/education/summer-research-program/how-to-apply/",
       "applicationUrl": "https://www.epfl.ch/schools/sv/education/summer-research-program/how-to-apply/",
-      "lastChecked": "2026-11-08T11:57:22+00:00",
-      "verifiedAt": "2026-11-08T11:57:22+00:00"
+      "lastChecked": "2026-11-08T21:11:58+00:00",
+      "verifiedAt": "2026-11-08T21:11:58+00:00"
     },
     {
       "id": "aalto-asci",
@@ -80,8 +80,8 @@ window.RESEARCHTRACK_FEED = {
       "notes": "2027 project list expected mid-December 2026.",
       "sourceUrl": "https://www.aalto.fi/en/aalto-university-science-institute-asci/aalto-university-science-institute-international-summer-research-programme",
       "applicationUrl": "https://www.aalto.fi/en/aalto-university-science-institute-asci/aalto-university-science-institute-international-summer-research-programme",
-      "lastChecked": "2026-11-08T11:57:22+00:00",
-      "verifiedAt": "2026-11-08T11:57:22+00:00"
+      "lastChecked": "2026-11-08T21:11:58+00:00",
+      "verifiedAt": "2026-11-08T21:11:58+00:00"
     },
     {
       "id": "eth-ssrf",
@@ -323,8 +323,8 @@ window.RESEARCHTRACK_FEED = {
       "sourceUrl": "https://phd.ista.ac.at/isternship/isternship-faq/",
       "applicationUrl": "",
       "labsUrl": "https://ista.ac.at/en/research/",
-      "lastChecked": "2026-11-08T11:57:22+00:00",
-      "verifiedAt": "2026-11-08T11:57:22+00:00"
+      "lastChecked": "2026-11-08T21:11:58+00:00",
+      "verifiedAt": "2026-11-08T21:11:58+00:00"
     },
     {
       "id": "cern-summer-studentship",
